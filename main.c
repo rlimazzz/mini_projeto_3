@@ -37,7 +37,11 @@ void cadastro(FILE *file) {
 	scanf("%s", cadastrando.email);
 	
 	//escrevendo meus dados no file
-	fprintf(file, "USUARIO : %s , SENHA : %s, EMAIL : %s\n", cadastrando.usuario, cadastrando.senha, cadastrando.email);
+    char mensagem[100000];
+    int t=10;
+    sprintf(mensagem, "USUARIO : %s , SENHA : %s, EMAIL : %s\n", cadastrando.usuario, cadastrando.senha, cadastrando.email);
+
+    fwrite(mensagem , strlen(mensagem), 1, file);
 	
 	printf("BOAS VINDAS AO CORRUPT BANK CARO SR OU SRA %s \n", cadastrando.usuario);
 	//libero a memória alocada para uso em outras aplicações
@@ -52,7 +56,7 @@ int main() {
 	/* inicialização do arquivo no qual estou escrevendo o cadastro dos meus usúarios */
 	FILE *file;
 	//aqui eu abro a file na opção de append para nunca sobreescrever meu arquivo
-	file = fopen("teste.bin", "a");
+	file = fopen("teste.bin", "ab");
 
 	//interface basica só pra ter um esqueleto
 	printf("CORRUPT BANK\n");
