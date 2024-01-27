@@ -24,8 +24,10 @@ Features:
 --------
 - Command Line Interface;
 - Acesso nas linguagens C/C++;
+- Suporte de arquivos binários;
 - Verificação CAPTCHA;
 - Testes.
+
 
 Instalação:
 -------------------
