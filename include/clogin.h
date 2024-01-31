@@ -126,6 +126,7 @@ Sessao login() {
 
 	return sessao;
 }
+
 void captcha();
 
 // Uso em funções exigem login
@@ -140,6 +141,6 @@ Sessao validarSessao(Sessao sessao) {
     };
 
     return sessao;
-};
+}
 
 #endif 
