@@ -81,7 +81,7 @@ bool cadastro(FILE *file, User cadastrando) {
 		cadastrando.username,
 		FILE_SEP,
 		cadastrando.password,
-		FILE_SEP
+		FILE_SEP,
 		cadastrando.email
 	);
     fwrite(mensagem ,strlen(mensagem), 1, file);
@@ -96,11 +96,39 @@ bool cadastro(FILE *file, User cadastrando) {
 
 Sessao login() {
 	Sessao sessao;
+
+	FILE *arquivo; 
+	arquivo = fopen("./teste.bin/", "rb");
+	if(!arquivo) printf("Erro ao abrir arquivo\n");
+
+	User visitante;
+	visitante.username = calloc(100, sizeof(char));
+	visitante.password = calloc(100, sizeof(char));
+
+	printf("Insira seu username: ");
+	scanf("%s%*c", visitante.username);
+
+	printf("Insira sua senha: ");
+	scanf("%s%*c", visitante.password);
+
+    char username[100], password[100];
+    while (fscanf(arquivo, "%[^,],%[^,]\n", username, password) != EOF) 
+	{
+        if (strcmp(username, visitante.username) == 0 && strcmp(password, visitante.password) == 0) 
+		{
+        	fclose(arquivo);
+            printf("Achei\n");
+        }
+    }
+
+	printf("Não achei\n");
+    fclose(arquivo);
+
 	return sessao;
 }
 void captcha();
 
-// Uso em funções que exigem login
+// Uso em funções exigem login
 Sessao validarSessao(Sessao sessao) {
     time_t agora = time(NULL);
 

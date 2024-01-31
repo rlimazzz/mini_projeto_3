@@ -9,7 +9,7 @@ int main() {
 	/* inicialização do arquivo no qual estou escrevendo o cadastro dos meus usúarios */
 	FILE *file;
 	//aqui eu abro a file na opção de append para nunca sobreescrever meu arquivo
-	file = fopen("teste.bin", "ab");
+	file = fopen("./include/teste.bin", "ab");
 
 	//interface basica só pra ter um esqueleto
 	printf("CORRUPT BANK\n");
@@ -21,7 +21,7 @@ int main() {
 	printf("3 - Verificar Captcha\n$");
 
 	int option;
-	scanf("%d", &option);
+	scanf("%d%*c", &option);
 
 	if(option == 1) 
 	{
