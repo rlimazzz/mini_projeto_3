@@ -1,58 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "./include/clogin.h"
 
-//struct principal que vou usar para tudo
-typedef struct {
-	char *usuario;
-	char *senha;
-	char *email;
-} Pessoa;
-
-void cadastro(FILE *file) {
-
-	system("clear");
-	//declaro meu usuario a ser cadastrado
-	Pessoa cadastrando;
-	
-	//alocação de memoria para uso na struct
-	cadastrando.usuario = (char*) malloc(100*sizeof(char));
-	cadastrando.senha = (char*) malloc(100*sizeof(char));
-	cadastrando.email = (char*) malloc(300*sizeof(char));
-
-	//---------------------------------------
-
-	printf("REALIZAÇÃO DO CADASTRO\n");
-
-	printf("DIGITE SEU USUARIO\n");
-
-	scanf("%s", cadastrando.usuario);
-
-	printf("DIGITE SUA SENHA\n");
-
-	scanf("%s", cadastrando.senha);
-
-	printf("DIGITE SEU EMAIL\n");
-
-	scanf("%s", cadastrando.email);
-	
-	//escrevendo meus dados no file
-    char mensagem[100000];
-    int t=10;
-    sprintf(mensagem, "USUARIO : %s , SENHA : %s, EMAIL : %s\n", cadastrando.usuario, cadastrando.senha, cadastrando.email);
-
-    fwrite(mensagem , strlen(mensagem), 1, file);
-	
-	printf("BOAS VINDAS AO CORRUPT BANK CARO SR OU SRA %s \n", cadastrando.usuario);
-	//libero a memória alocada para uso em outras aplicações
-	free(cadastrando.usuario);
-	free(cadastrando.senha);
-	free(cadastrando.email);
-	
-}
-
-int main() {
-
+int main() {	
+	// Struct user vinda da clogin.h
+	User new_user;
 	/* inicialização do arquivo no qual estou escrevendo o cadastro dos meus usúarios */
 	FILE *file;
 	//aqui eu abro a file na opção de append para nunca sobreescrever meu arquivo
@@ -72,11 +25,16 @@ int main() {
 
 	if(option == 1) 
 	{
-		printf("Ola\n");
+		// funcão login da clogin.h
+		login();
 	}
 	else if(option == 2) 
 	{
-		cadastro(file);
+		// função cadastro da clogin.h
+		cadastro(file, new_user);
+	} else if (option == 3) {
+		// função captcha da clogin.h
+		//captcha();
 	}
 
 	fclose(file);
