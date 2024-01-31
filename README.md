@@ -46,7 +46,7 @@ mini_projeto_3/           # Pasta principal do projeto
 |   |-- (arquivos gráficos aqui)
 |-- README.md            # Arquivo de documentação do projeto
 |-- main.c               # Arquivo fonte principal do código
-|-- teste.bin            # Arquivo binário de teste
+|-- teste.bin            # Arquivo binário do banco de dados
 ```
 
 Documentação
