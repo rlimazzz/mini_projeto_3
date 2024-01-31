@@ -41,14 +41,14 @@ gcc main.c
 Layout do projeto
 --------------
 ```bash
-mini_projeto_3/           # Pasta principal do projeto
-|-- docs/                # Pasta contendo arquivos gráficos
+mini_projeto_3/                 # Pasta principal do projeto
+|-- docs/                       # Pasta contendo arquivos gráficos
 |   |-- (arquivos gráficos aqui)
-|-- include/                # Pasta do arquivo fonte da biblioteca
+|-- include/                    # Pasta do arquivo fonte da biblioteca
 |   |-- (arquivos da biblioteca aqui)
-|-- README.md            # Arquivo de documentação do projeto
-|-- main.c               # Arquivo fonte principal do código
-|-- teste.bin            # Arquivo binário do banco de dados
+|-- README.md                   # Arquivo de documentação do projeto
+|-- teste.bin                   # Arquivo binário do banco de dados
+|-- use_example.c               # Um exemplo de uso da biblioteca
 ```
 
 Documentação
