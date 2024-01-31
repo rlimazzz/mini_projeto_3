@@ -7,9 +7,14 @@
 // amount of libraries:
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+
+#define MAX_BUFFER 10000
+#define MAX_FIELD 255
+#define DURACAO_SESSAO 60 * 60 * 24 * 7 // 1 semana
 
 // main struct
 typedef struct {
@@ -18,48 +23,75 @@ typedef struct {
 	char *email;
 } User;
 
+typedef struct {
+    char *email;
+    char *username;
+    char funcao[3]; // "adm" | "usr"
+    int expira_em;
+} Sessao;
+
 // function declarations
-void cadastro(FILE *file, User cadastrando) {
+bool cadastro(FILE *file, User cadastrando) {
 
 	system("clear");
-	//declaro meu usuario a ser cadastrado
 	
 	//alocação de memoria para uso na struct
 	cadastrando.username = (char*) malloc(100*sizeof(char));
+	if (cadastrando.username == NULL)
+		return false;
+
 	cadastrando.password = (char*) malloc(100*sizeof(char));
+	if (cadastrando.password == NULL)
+		return false;
+
 	cadastrando.email = (char*) malloc(300*sizeof(char));
+	if (cadastrando.email == NULL)
+		return false;
 
 	//---------------------------------------
 
-	printf("REALIZAÇÃO DO CADASTRO\n");
+	printf("\nREALIZAÇÃO DO CADASTRO\n");
 
 	printf("DIGITE SEU USUARIO\n");
-
-	scanf("%s", cadastrando.username);
+	scanf("%[^\n]%*c", cadastrando.username);
 
 	printf("DIGITE SUA SENHA\n");
-
-	scanf("%s", cadastrando.password);
+	scanf("%s%*c", cadastrando.password);
 
 	printf("DIGITE SEU EMAIL\n");
-
-	scanf("%s", cadastrando.email);
+	scanf("%s%*c", cadastrando.email);
 	
 	//escrevendo meus dados no file
-    char mensagem[100000];
-    int t=10;
-    sprintf(mensagem, "USUARIO : %s , SENHA : %s, EMAIL : %s\n", cadastrando.username, cadastrando.password, cadastrando.email);
-
-    fwrite(mensagem , strlen(mensagem), 1, file);
+    char mensagem[MAX_BUFFER];
+    sprintf(mensagem, "%s,%s,%s\n", cadastrando.username, cadastrando.password, cadastrando.email);
+    fwrite(mensagem ,strlen(mensagem), 1, file);
 	
 	printf("CADASTRO REALIZADO COM SUCESSO: %s \n", cadastrando.username);
+
 	//libero a memória alocada para uso em outras aplicações
 	free(cadastrando.username);
 	free(cadastrando.password);
 	free(cadastrando.email);	
 }
 
-void login();
+Sessao login() {
+	Sessao sessao;
+	return sessao;
+}
 void captcha();
+
+// Uso em funções que exigem login
+Sessao validarSessao(Sessao sessao) {
+    time_t agora = time(NULL);
+
+    // Caso a sessao esteja expirada, exija o login
+    if (sessao.expira_em < agora) {
+        printf("Sua sessão foi expirada, por favor faça login novamente!\n\n");
+        Sessao novaSessao = login();
+        return novaSessao;
+    };
+
+    return sessao;
+};
 
 #endif 
