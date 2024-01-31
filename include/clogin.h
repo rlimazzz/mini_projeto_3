@@ -15,6 +15,7 @@
 #define MAX_BUFFER 10000
 #define MAX_FIELD 255
 #define DURACAO_SESSAO 60 * 60 * 24 * 7 // 1 semana
+#define FILE_SEP ','
 
 // main struct
 typedef struct {
@@ -29,6 +30,10 @@ typedef struct {
     char funcao[3]; // "adm" | "usr"
     int expira_em;
 } Sessao;
+
+bool check_character(char * str, char key) {
+	return memchr(str, key, strlen(str)) != NULL;
+}
 
 // function declarations
 bool cadastro(FILE *file, User cadastrando) {
@@ -60,10 +65,25 @@ bool cadastro(FILE *file, User cadastrando) {
 
 	printf("DIGITE SEU EMAIL\n");
 	scanf("%s%*c", cadastrando.email);
+
+	if (
+		check_character(cadastrando.username, FILE_SEP)
+		|| check_character(cadastrando.password, FILE_SEP)
+		|| check_character(cadastrando.email, FILE_SEP)
+	) {
+		printf("CARACTER INVÁLIDO INSERIDO %c!\n", FILE_SEP);
+		return false;
+	}
 	
 	//escrevendo meus dados no file
     char mensagem[MAX_BUFFER];
-    sprintf(mensagem, "%s,%s,%s\n", cadastrando.username, cadastrando.password, cadastrando.email);
+    sprintf(mensagem, "%s%c%s%c%s\n", 
+		cadastrando.username,
+		FILE_SEP,
+		cadastrando.password,
+		FILE_SEP
+		cadastrando.email
+	);
     fwrite(mensagem ,strlen(mensagem), 1, file);
 	
 	printf("CADASTRO REALIZADO COM SUCESSO: %s \n", cadastrando.username);
