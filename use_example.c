@@ -34,7 +34,9 @@ int main() {
 		cadastro(file, new_user);
 	} else if (option == 3) {
 		// função captcha da clogin.h
-		//captcha();
+		if(captcha()) {
+			printf("CAPTCHA FEITO COM SUCESSO\n");
+		}
 	}
 
 	fclose(file);
