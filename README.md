@@ -40,7 +40,14 @@ make
 ```
 Layout do projeto
 --------------
-Em andamento...
+```bash
+mini_projeto_3/           # Pasta principal do projeto
+|-- docs/                # Pasta contendo arquivos gráficos
+|   |-- (arquivos gráficos aqui)
+|-- README.md            # Arquivo de documentação do projeto
+|-- main.c               # Arquivo fonte principal do código
+|-- teste.bin            # Arquivo binário de teste
+```
 
 Documentação
 --------------
