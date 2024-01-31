@@ -47,4 +47,15 @@ Documentação
 Em andamento...
 
 ## Autores
-Em andamento...
+1. Acsa Mendes
+2. Caio Farias
+3. Felipe Sucupira
+4. Jhoy Kallebe
+5. Ryan Gabryel
+6. Tiago Pio
+
+<div align="center">
+  <a align="center" href="https://github.com/rlimazzz/mini_projeto_3/contributors">
+  <img src="https://contrib.rocks/image?repo=rlimazzz/mini_projeto_3" />
+  </a>
+</div>
