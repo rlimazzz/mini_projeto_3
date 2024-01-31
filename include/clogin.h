@@ -98,8 +98,42 @@ Sessao login() {
 	Sessao sessao;
 	return sessao;
 }
-void captcha();
+void captcha(){
+	system("clear");
 
+   	int i, n;
+  	time_t t;
+   
+  	n = 5;
+   
+	/* Intializes random number generator */
+	srand(time(0));
+	  	 
+	/* Print 5 random numbers from 0 to 49 */
+	   
+	int aleatorio = rand();
+	for( i = 0 ; i < n ; i++ ) {
+		
+		int entrada_usuario, aleatorio = rand() % 99; 
+	
+	
+		printf("DIGITE O NUMERO APRESENTADO\n");
+	
+		printf("%d\n$", aleatorio);
+	
+		scanf("%d", &entrada_usuario);
+	
+		if(entrada_usuario == aleatorio) {
+			printf("CORRETO!\n");
+		}else {
+			printf("TENTE NOVAMENTE!\n");
+			i--;
+		}
+	}
+	printf("CAPTCHA FEITO COM SUCESSO\n");
+
+}
+	
 // Uso em funções que exigem login
 Sessao validarSessao(Sessao sessao) {
     time_t agora = time(NULL);
