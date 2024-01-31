@@ -1,7 +1,7 @@
-#ifndef FORCA
-#define FORCA
+#ifndef CLOGIN
+#define CLOGIN
 
-// the forca project header
+// the clogin project header
 
 // including an unreasonable
 // amount of libraries:
