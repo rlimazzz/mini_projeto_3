@@ -36,7 +36,7 @@ No terminal, siga os comandos:
 ```bash
 git clone 'https://github.com/rlimazzz/mini_projeto_3.git'
 cd mini_projeto_3
-make
+gcc main.c
 ```
 Layout do projeto
 --------------
