@@ -109,7 +109,7 @@ char *generate_captcha() {
     strcat(all_char, numbers);
 
     char* captcha = (char*)malloc((CAPTCHA_LENGTH + 1) * sizeof(char));
-    if (captcha == NULL) {
+    if (!captcha) {
         perror("Memory allocation error");
         exit(EXIT_FAILURE);
     }
