@@ -16,6 +16,7 @@
 #define MAX_FIELD 255
 #define DURACAO_SESSAO 60 * 60 * 24 * 7 // 1 semana
 #define FILE_SEP ','
+#define CAPTCHA_LENGTH 5
 
 // main struct
 typedef struct {
@@ -98,39 +99,58 @@ Sessao login() {
 	Sessao sessao;
 	return sessao;
 }
-void captcha(){
+
+char *generate_captcha() {
+    char symbols[] = "!@#$%,./ABCDEFGHIJKLMNOPQRSTUVWXYZ?";
+    const char numbers[] = "0123456789";
+    char all_char[strlen(symbols) + strlen(numbers) + 1];
+
+    strcpy(all_char, symbols);
+    strcat(all_char, numbers);
+
+    char* captcha = (char*)malloc((CAPTCHA_LENGTH + 1) * sizeof(char));
+    if (captcha == NULL) {
+        perror("Memory allocation error");
+        exit(EXIT_FAILURE);
+    }
+
+    int i;
+    for (i = 0; i < CAPTCHA_LENGTH; i++) {
+        captcha[i] = all_char[rand() % strlen(all_char)];
+    }
+
+    captcha[CAPTCHA_LENGTH] = '\0';
+    return captcha;
+}
+
+
+bool captcha(){
 	system("clear");
 
    	int i, n;
   	time_t t;
    
   	n = 5;
-   
-	/* Intializes random number generator */
 	srand(time(0));
-	  	 
-	/* Print 5 random numbers from 0 to 49 */
-	   
-	int aleatorio = rand();
-	for( i = 0 ; i < n ; i++ ) {
-		
-		int entrada_usuario, aleatorio = rand() % 99; 
 	
+	for (i = 0; i < n; i++) {
+	        char* generated_captcha = generate_captcha();
+	        printf("DIGITE OS CARACTERES APRESENTADOS: %s\n", generated_captcha);
 	
-		printf("DIGITE O NUMERO APRESENTADO\n");
+	        char user_input[CAPTCHA_LENGTH + 1];
+	        scanf("%5s", user_input);
+	        int c; while((c = getchar()) != '\n' && c != EOF) {}
 	
-		printf("%d\n$", aleatorio);
-	
-		scanf("%d", &entrada_usuario);
-	
-		if(entrada_usuario == aleatorio) {
-			printf("CORRETO!\n");
-		}else {
-			printf("TENTE NOVAMENTE!\n");
-			i--;
-		}
-	}
-	printf("CAPTCHA FEITO COM SUCESSO\n");
+	        if (strcmp(user_input, generated_captcha) == 0) {
+	            printf("CAPTCHA CORRETO!\n");
+	            return true;
+	        } else {
+	            printf("CAPTCHA INCORRETO, TENTE NOVAMENTE!\n");
+	            i--;
+	        }
+       		free(generated_captcha);
+    	}
+    	return false;
 
 }
 	
