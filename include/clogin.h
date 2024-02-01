@@ -16,6 +16,7 @@
 #define MAX_FIELD 255
 #define DURACAO_SESSAO 60 * 60 * 24 * 7 // 1 semana
 #define FILE_SEP ','
+#define CAPTCHA_LENGTH 5
 
 // main struct
 typedef struct {
