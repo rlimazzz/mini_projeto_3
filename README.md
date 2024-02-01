@@ -36,7 +36,7 @@ No terminal, siga os comandos:
 ```bash
 git clone 'https://github.com/rlimazzz/mini_projeto_3.git'
 cd mini_projeto_3
-gcc main.c
+gcc use_example.c
 ```
 Layout do projeto
 --------------
@@ -46,8 +46,11 @@ mini_projeto_3/                 # Pasta principal do projeto
 |   |-- (arquivos gráficos aqui)
 |-- include/                    # Pasta do arquivo fonte da biblioteca
 |   |-- (arquivos da biblioteca aqui)
+|   |-- teste.bin               # Arquivo binário do banco de dados
+|-- tests/                      # Diretório responsável pelos testes do projeto
+|   |-- (arquivos da biblioteca aqui)
 |-- README.md                   # Arquivo de documentação do projeto
-|-- teste.bin                   # Arquivo binário do banco de dados
+|-- start                       # Arquivo de inicialização
 |-- use_example.c               # Um exemplo de uso da biblioteca
 ```
 
