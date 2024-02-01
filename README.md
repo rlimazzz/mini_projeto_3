@@ -56,7 +56,104 @@ mini_projeto_3/                 # Pasta principal do projeto
 
 Documentação
 --------------
-Em andamento...
+CLogin - Sistema de Login em C
+O CLogin é um sistema de login simples em linguagem C que permite o cadastro de usuários, autenticação e geração de sessões de usuário.
+### Structs
+1. User:
+- A estrutura User representa as informações de um usuário, contendo campos como username (nome de usuário), password (senha) e email.
+  ```c
+  typedef struct {
+      char *username;
+      char *password;
+      char *email;
+  } User;
+  ```
+2. Sessao:
+- A estrutura Sessao representa uma sessão de usuário, contendo informações como email, username, funcao (tipo de usuário: "adm" | "usr") e expira_em (tempo de expiração da sessão).
+  ```c
+  typedef struct {
+    char *email;
+    char *username;
+    char funcao[3]; // "adm" | "usr"
+    int expira_em;
+  } Sessao;
+  ```
+-------------
+### Funções
+
+1. ```c
+   bool cadastro(FILE *file, User cadastrando);
+   ```
+   Realiza o cadastro de um novo usuário, solicitando e armazenando o username, password e email. Retorna true se o cadastro for bem-sucedido e false caso contrário.
+   - Exemplo de uso:
+   ```c
+   FILE *arquivo = fopen("usuarios.txt", "a");
+   User novoUsuario;
+   cadastro(arquivo, novoUsuario);
+   fclose(arquivo);
+   ```
+   -------------
+  
+2. ```c
+   Sessao login();
+   ```
+   Realiza o login de um usuário, verificando as credenciais em um arquivo binário. Retorna uma estrutura Sessao válida se o login for bem-sucedido.
+   - Exemplo de uso:
+   ```c
+   Sessao sessaoUsuario = login();
+   ```
+   
+   -------------
+
+3. ```c
+   char *generate_captcha();
+   ```
+   Gera e retorna um código CAPTCHA composto por caracteres alfanuméricos e especiais.
+   - Exemplo de uso:
+   ```c
+   char *captchaCode = generate_captcha();
+   ```
+   
+   -------------
+   
+4. ```c
+   bool captcha();
+   ```
+   Apresenta um desafio CAPTCHA ao usuário, solicitando a entrada dos caracteres apresentados. Retorna true se o CAPTCHA for correto e false caso contrário.
+   - Exemplo de uso:
+   ```c
+   bool captchaValido = captcha();
+   ```
+   
+   -------------
+
+5. ```c
+   Sessao validarSessao(Sessao sessao);
+   ```
+   Verifica se uma sessão de usuário está expirada. Se expirada, exige um novo login. Retorna uma nova sessão válida.
+   - Exemplo de uso:
+   ```c
+   sessaoUsuario = validarSessao(sessaoUsuario);
+   ```
+-------------
+### Definições e Constantes
+  1. ```MAX_BUFFER, MAX_FIELD```
+    Define o tamanho máximo de buffer e de campo, respectivamente.
+
+  2. ```DURACAO_SESSAO```
+    Define a duração padrão de uma sessão em segundos (1 semana).
+
+  3. ```FILE_SEP```
+    Define o separador utilizado no arquivo para armazenar informações do usuário.
+
+  4. ```CAPTCHA_LENGTH```
+    Define o comprimento do código CAPTCHA gerado.
+
+  -------------
+    
+### Observações
+  Todas as funções exigem a inclusão do cabeçalho ```#include "clogin.h"``` no código fonte.
+    Este é um projeto simples e educacional. Recomenda-se aprimorar a segurança e robustez do sistema para uso em ambientes de produção.
 
 ## Autores
 1. Acsa Mendes
