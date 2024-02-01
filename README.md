@@ -27,7 +27,7 @@
 
 CLOGIN é uma biblioteca que visa facilitar o processo de autenticação de logins em aplicações.
 
-### Features:
+## Features:
 --------
 - Command Line Interface;
 - Acesso nas linguagens C/C++;
@@ -36,7 +36,7 @@ CLOGIN é uma biblioteca que visa facilitar o processo de autenticação de logi
 - Testes.
 
 
-### Instalação:
+## Instalação:
 -------------------
 No terminal, siga os comandos:
 ### Linux
@@ -45,7 +45,7 @@ git clone 'https://github.com/rlimazzz/mini_projeto_3.git'
 cd mini_projeto_3
 gcc use_example.c
 ```
-### Layout do projeto
+## Layout do projeto:
 --------------
 ```bash
 mini_projeto_3/                 # Pasta principal do projeto
@@ -61,7 +61,7 @@ mini_projeto_3/                 # Pasta principal do projeto
 |-- use_example.c               # Um exemplo de uso da biblioteca
 ```
 
-### Documentação
+## Documentação:
 --------------
 CLogin - Sistema de Login em C
 O CLogin é um sistema de login simples em linguagem C que permite o cadastro de usuários, autenticação e geração de sessões de usuário.
@@ -162,7 +162,7 @@ O CLogin é um sistema de login simples em linguagem C que permite o cadastro de
   Todas as funções exigem a inclusão do cabeçalho ```#include "clogin.h"``` no código fonte.
     Este é um projeto simples e educacional. Recomenda-se aprimorar a segurança e robustez do sistema para uso em ambientes de produção.
 
-### Autores
+## Autores:
 1. Acsa Mendes
 2. Caio Farias
 3. Felipe Sucupira
