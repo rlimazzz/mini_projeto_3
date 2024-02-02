@@ -165,10 +165,9 @@ O CLogin é um sistema de login simples em linguagem C que permite o cadastro de
 ## Autores:
 1. Acsa Mendes
 2. Caio Farias
-3. Felipe Sucupira
-4. Jhoy Kallebe
-5. Ryan Gabryel
-6. Tiago Pio
+3. Jhoy Kallebe
+4. Ryan Gabryel
+5. Tiago Pio
 
 <div align="center">
   <a align="center" href="https://github.com/rlimazzz/mini_projeto_3/contributors">
