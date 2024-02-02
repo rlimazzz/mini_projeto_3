@@ -28,7 +28,6 @@ typedef struct {
 typedef struct {
     char *email;
     char *username;
-    char funcao[3]; // "adm" | "usr"
     int expira_em;
 } Sessao;
 
@@ -72,7 +71,7 @@ bool cadastro(FILE *file, User cadastrando) {
 		|| check_character(cadastrando.password, FILE_SEP)
 		|| check_character(cadastrando.email, FILE_SEP)
 	) {
-		printf("CARACTER INVÁLIDO INSERIDO %c!\n", FILE_SEP);
+		printf("CARACTER INVÁLIDO INSERIDO '%c'!\n", FILE_SEP);
 		return false;
 	}
 	
@@ -99,12 +98,25 @@ Sessao login() {
 	Sessao sessao;
 
 	FILE *arquivo; 
-	arquivo = fopen("./teste.bin/", "rb");
-	if(!arquivo) printf("Erro ao abrir arquivo\n");
+	arquivo = fopen("./include/teste.bin", "rb");
+	if(!arquivo) {
+        perror("Memory allocation error");
+        exit(EXIT_FAILURE);
+    }
 
 	User visitante;
-	visitante.username = calloc(100, sizeof(char));
-	visitante.password = calloc(100, sizeof(char));
+	visitante.username = (char*) calloc(100, sizeof(char));
+    if (visitante.username == NULL) {
+        perror("Memory allocation error");
+        exit(EXIT_FAILURE);
+    }
+
+	visitante.password = (char*) calloc(100, sizeof(char));
+    if (visitante.password == NULL) {
+        perror("Memory allocation error");
+        exit(EXIT_FAILURE);
+    }
+
 
 	printf("Insira seu username: ");
 	scanf("%s%*c", visitante.username);
@@ -112,20 +124,44 @@ Sessao login() {
 	printf("Insira sua senha: ");
 	scanf("%s%*c", visitante.password);
 
-    char username[100], password[100];
-    while (fscanf(arquivo, "%[^,],%[^,]\n", username, password) != EOF) 
+    char username[100], password[100], email[MAX_FIELD];
+    while (fscanf(arquivo, "%[^,],%[^,],%[^\n]\n", username, password, email) != EOF) 
 	{
         if (strcmp(username, visitante.username) == 0 && strcmp(password, visitante.password) == 0) 
 		{
         	fclose(arquivo);
             printf("Achei\n");
+
+            sessao.email = (char*) malloc(sizeof(char) * strlen(email));
+            if (sessao.email == NULL) {
+                perror("Memory allocation error");
+                exit(EXIT_FAILURE);
+            }
+
+            sessao.username = (char*) malloc(sizeof(char) * strlen(username));
+            if (sessao.username == NULL) {
+                perror("Memory allocation error");
+                exit(EXIT_FAILURE);
+            }
+
+            free(visitante.username);
+            free(visitante.password);
+
+            strcpy(sessao.email, email);
+            strcpy(sessao.username, username);
+            sessao.expira_em = time(NULL) + DURACAO_SESSAO;
+
+            return sessao;
         }
     }
 
 	printf("Não achei\n");
-    fclose(arquivo);
 
-	return sessao;
+    fclose(arquivo);
+    free(visitante.username);
+    free(visitante.password);
+
+    return login(); // <- A recursão
 }
 
 char *generate_captcha() {
