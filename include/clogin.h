@@ -18,7 +18,9 @@
 #define FILE_SEP ','
 #define CAPTCHA_LENGTH 5
 
-// main struct
+char databasePath[MAX_FIELD];
+bool databasePathSet = false;
+
 typedef struct {
 	char *username;
 	char *password;
@@ -28,19 +30,40 @@ typedef struct {
 typedef struct {
     char *email;
     char *username;
-    int expira_em;
+    int _expira_em;
 } Sessao;
 
 bool check_character(char * str, char key) {
 	return memchr(str, key, strlen(str)) != NULL;
 }
 
-// function declarations
-bool cadastro(FILE *file, User cadastrando) {
+void setDatabasePath(char * path) {
+	strcpy(databasePath, path);
 
-	system("clear");
+	FILE * file = fopen(databasePath, "rb");
+	if (file == NULL) {
+		printf("setDatabasePath falhou, caminho do arquivo não foi encontrado!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	fclose(file);
+	databasePathSet = true;
+}
+
+bool cadastro() {
+
+	if (!databasePathSet) {
+		printf("Database path not defined! Use 'setDatabasePath' to set the path to your database\n");
+		exit(EXIT_FAILURE);
+	}
+
+	FILE *file = fopen(databasePath, "ab");
+	if(!file) {
+        printf("Memory allocation error or file not exits");
+        exit(EXIT_FAILURE);
+    }
 	
-	//alocação de memoria para uso na struct
+	User cadastrando;
 	cadastrando.username = (char*) malloc(100*sizeof(char));
 	if (cadastrando.username == NULL)
 		return false;
@@ -53,12 +76,10 @@ bool cadastro(FILE *file, User cadastrando) {
 	if (cadastrando.email == NULL)
 		return false;
 
-	//---------------------------------------
-
 	printf("\nREALIZAÇÃO DO CADASTRO\n");
 
 	printf("DIGITE SEU USUARIO\n");
-	scanf("%[^\n]%*c", cadastrando.username);
+	scanf("%s%*c", cadastrando.username);
 
 	printf("DIGITE SUA SENHA\n");
 	scanf("%s%*c", cadastrando.password);
@@ -75,7 +96,6 @@ bool cadastro(FILE *file, User cadastrando) {
 		return false;
 	}
 	
-	//escrevendo meus dados no file
     char mensagem[MAX_BUFFER];
     sprintf(mensagem, "%s%c%s%c%s\n", 
 		cadastrando.username,
@@ -84,39 +104,46 @@ bool cadastro(FILE *file, User cadastrando) {
 		FILE_SEP,
 		cadastrando.email
 	);
-    fwrite(mensagem ,strlen(mensagem), 1, file);
+    fwrite(mensagem, strlen(mensagem), 1, file);
 	
 	printf("CADASTRO REALIZADO COM SUCESSO: %s \n", cadastrando.username);
 
-	//libero a memória alocada para uso em outras aplicações
 	free(cadastrando.username);
 	free(cadastrando.password);
 	free(cadastrando.email);	
 }
 
-Sessao login() {
-	Sessao sessao;
+Sessao login(int maxTries) {
 
-	FILE *arquivo; 
-	arquivo = fopen("./include/teste.bin", "rb");
-	if(!arquivo) {
-        perror("Memory allocation error");
+	if (maxTries == 0) {
+		printf("\nMaximum number of attempts reached, please try again later\n");
+		exit(EXIT_FAILURE);
+	}
+
+	Sessao sessao;
+	if (!databasePathSet) {
+		printf("Database path not defined! Use 'setDatabasePath' to set the path to your database\n");
+		exit(EXIT_FAILURE);
+	}
+
+	FILE * file = fopen(databasePath, "rb");
+	if(!file) {
+        printf("Memory allocation error");
         exit(EXIT_FAILURE);
     }
 
 	User visitante;
 	visitante.username = (char*) calloc(100, sizeof(char));
     if (visitante.username == NULL) {
-        perror("Memory allocation error");
+        printf("Memory allocation error");
         exit(EXIT_FAILURE);
     }
 
 	visitante.password = (char*) calloc(100, sizeof(char));
     if (visitante.password == NULL) {
-        perror("Memory allocation error");
+        printf("Memory allocation error");
         exit(EXIT_FAILURE);
     }
-
 
 	printf("Insira seu username: ");
 	scanf("%s%*c", visitante.username);
@@ -125,22 +152,21 @@ Sessao login() {
 	scanf("%s%*c", visitante.password);
 
     char username[100], password[100], email[MAX_FIELD];
-    while (fscanf(arquivo, "%[^,],%[^,],%[^\n]\n", username, password, email) != EOF) 
+    while (fscanf(file, "%[^,],%[^,],%[^\n]\n", username, password, email) != EOF) 
 	{
         if (strcmp(username, visitante.username) == 0 && strcmp(password, visitante.password) == 0) 
 		{
-        	fclose(arquivo);
-            printf("Achei\n");
+        	fclose(file);
 
             sessao.email = (char*) malloc(sizeof(char) * strlen(email));
             if (sessao.email == NULL) {
-                perror("Memory allocation error");
+                printf("Memory allocation error");
                 exit(EXIT_FAILURE);
             }
 
             sessao.username = (char*) malloc(sizeof(char) * strlen(username));
             if (sessao.username == NULL) {
-                perror("Memory allocation error");
+                printf("Memory allocation error");
                 exit(EXIT_FAILURE);
             }
 
@@ -149,19 +175,17 @@ Sessao login() {
 
             strcpy(sessao.email, email);
             strcpy(sessao.username, username);
-            sessao.expira_em = time(NULL) + DURACAO_SESSAO;
+            sessao._expira_em = time(NULL) + DURACAO_SESSAO;
 
             return sessao;
         }
     }
 
-	printf("Não achei\n");
-
-    fclose(arquivo);
+    fclose(file);
     free(visitante.username);
     free(visitante.password);
 
-    return login(); // <- A recursão
+    return login(maxTries - 1);
 }
 
 char *generate_captcha() {
@@ -174,7 +198,7 @@ char *generate_captcha() {
 
     char* captcha = (char*)malloc((CAPTCHA_LENGTH + 1) * sizeof(char));
     if (!captcha) {
-        perror("Memory allocation error");
+        printf("Memory allocation error");
         exit(EXIT_FAILURE);
     }
 
@@ -216,14 +240,12 @@ bool captcha() {
     return false;
 }
 
-// Uso em funções exigem login
-Sessao validarSessao(Sessao sessao) {
+Sessao validarSessao(Sessao sessao, int maxTries) {
     time_t agora = time(NULL);
 
-    // Caso a sessao esteja expirada, exija o login
-    if (sessao.expira_em < agora) {
+    if (sessao._expira_em < agora) {
         printf("Sua sessão foi expirada, por favor faça login novamente!\n\n");
-        Sessao novaSessao = login();
+        Sessao novaSessao = login(maxTries);
         return novaSessao;
     };
 

@@ -3,9 +3,9 @@
 #include <string.h>
 #include "./include/clogin.h"
 
+#define MAX_LOGIN_TRIES
+
 int main() {	
-	// Struct user vinda da clogin.h
-	User new_user;
 	/* inicialização do arquivo no qual estou escrevendo o cadastro dos meus usúarios */
 	FILE *file;
 	//aqui eu abro a file na opção de append para nunca sobreescrever meu arquivo
@@ -26,12 +26,12 @@ int main() {
 	if(option == 1) 
 	{
 		// funcão login da clogin.h
-		login();
+		login(MAX_LOGIN_TRIES);
 	}
 	else if(option == 2) 
 	{
 		// função cadastro da clogin.h
-		cadastro(file, new_user);
+		cadastro(file);
 	} else if (option == 3) {
 		// função captcha da clogin.h
 		if(captcha()) {
