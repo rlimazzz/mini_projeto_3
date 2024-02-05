@@ -21,6 +21,7 @@
 ## Tópicos Rápidos
 - [Features](#features)
 - [Instalação](#instalação)
+- [Testes](#testes)
 - [Estrutura do Projeto](#layout-do-projeto)
 - [Documentação](#documentação)
 - [Autores](#autores)
@@ -43,8 +44,18 @@ No terminal, siga os comandos:
 ```bash
 git clone 'https://github.com/rlimazzz/mini_projeto_3.git'
 cd mini_projeto_3
-gcc use_example.c
+make use_example
 ```
+
+
+## Testes:
+-------------------
+O arquivo de testes se encontra no caminho `tests/main.c`, e o arquivo de entrada em `tests/in`, para executar os testes, na raiz do projeto, execute o comando:
+### Linux
+```bash
+make tests
+```
+
 ## Layout do projeto:
 --------------
 ```bash
@@ -67,7 +78,7 @@ CLogin - Sistema de Login em C
 O CLogin é um sistema de login simples em linguagem C que permite o cadastro de usuários, autenticação e geração de sessões de usuário.
 ### Structs
 1. User:
-- A estrutura User representa as informações de um usuário, contendo campos como username (nome de usuário), password (senha) e email.
+- A estrutura User representa as informações de um usuário, contendo campos como username (nome de usuário), password (senha, vísivel apenas internamente) e email.
   ```c
   typedef struct {
       char *username;
@@ -76,38 +87,35 @@ O CLogin é um sistema de login simples em linguagem C que permite o cadastro de
   } User;
   ```
 2. Sessao:
-- A estrutura Sessao representa uma sessão de usuário, contendo informações como email, username, funcao (tipo de usuário: "adm" | "usr") e expira_em (tempo de expiração da sessão).
+- A estrutura Sessao representa uma sessão de usuário, contendo informações como email, username, _expira_em (tempo de expiração da sessão) e _has (caso a sessao esteja definida).
   ```c
   typedef struct {
     char *email;
     char *username;
-    char funcao[3]; // "adm" | "usr"
-    int expira_em;
+    int _expira_em;
+    bool _has;
   } Sessao;
   ```
 -------------
 ### Funções
 
 1. ```c
-   bool cadastro(FILE *file, User cadastrando);
+   bool cadastro();
    ```
    Realiza o cadastro de um novo usuário, solicitando e armazenando o username, password e email. Retorna true se o cadastro for bem-sucedido e false caso contrário.
    - Exemplo de uso:
    ```c
-   FILE *arquivo = fopen("usuarios.txt", "a");
-   User novoUsuario;
-   cadastro(arquivo, novoUsuario);
-   fclose(arquivo);
+   cadastro();
    ```
    -------------
   
 2. ```c
-   Sessao login();
+   Sessao login(int maxTries);
    ```
-   Realiza o login de um usuário, verificando as credenciais em um arquivo binário. Retorna uma estrutura Sessao válida se o login for bem-sucedido.
+   Realiza o login de um usuário, verificando as credenciais em um arquivo binário. Retorna uma estrutura Sessao válida se o login for bem-sucedido ou encerra a aplicação em caso de tentativas excedidas.
    - Exemplo de uso:
    ```c
-   Sessao sessaoUsuario = login();
+   Sessao sessaoUsuario = login(3);
    ```
    
    -------------
@@ -135,12 +143,52 @@ O CLogin é um sistema de login simples em linguagem C que permite o cadastro de
    -------------
 
 5. ```c
-   Sessao validarSessao(Sessao sessao);
+   Sessao validarSessao(Sessao sessao, int maxTries);
    ```
    Verifica se uma sessão de usuário está expirada. Se expirada, exige um novo login. Retorna uma nova sessão válida.
    - Exemplo de uso:
    ```c
-   sessaoUsuario = validarSessao(sessaoUsuario);
+   sessaoUsuario = validarSessao(sessaoUsuario, 3);
+   ```
+
+   -------------
+
+6. ```c
+   Sessao SetDatabasePath(char * path);
+   ```
+   Define o caminho para o arquivo binário onde os dados dos usuários serão salvos. Encerra o programa caso não seja informado um caminho válido
+   - Exemplo de uso:
+   ```c
+   SetDatabasePath("./usuarios.dat");
+   ```
+
+   -------------
+
+7. ```c
+   Sessao SetDuracaoSessao(int novaDuracao);
+   ```
+   Define o tempo de sessão (em segundos) do usuário após login. 
+   Não realiza a alteração para valores negativos. 
+   
+   Padrão: 1 Semana
+   - Exemplo de uso:
+   ```c
+   SetDuracaoSessao(60); // 60 segundos
+   ```
+
+   -------------
+
+8. ```c
+   Sessao verificarDuracaoSessao(Sessao sessao);
+   ```
+   Retorna o tempo restante da sessao ao ser executado.
+   Retorna 0 caso a sessão esteja expirada ou não esteja definida
+   
+   - Exemplo de uso:
+   ```c
+   if (verificarDuracaoSessao(sessao) < 60) {
+      printf("Seu tempo de sessão está quase acabando, refaça o login para prosseguir\n");
+   }
    ```
 -------------
 ### Definições e Constantes
