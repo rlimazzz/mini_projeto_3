@@ -99,5 +99,5 @@ void assert(bool expression, char * msg) {
         printf(SUCCESS"\nSucesso -\033[0m %s"FIM_COR, msg);
         return;
     }
-    printf(FAILURE"\nFalha -\033[0m%s", msg);
+    printf(FAILURE"\nFalha   -\033[0m %s", msg);
 }
