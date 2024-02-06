@@ -2,6 +2,13 @@
 #include <unistd.h>
 #define DATABASE_TEST_PATH "./tests/teste.dat" // Executado a partir da raiz
 
+#define COR "\e[0;35m"
+#define FIM_COR "\e[0m"
+#define FAILURE "\e[1;91m"
+#define SUCCESS "\e[1;92m"
+#define WARNING "\e[4;33m"	
+#define BLUE "\e[0;34"
+
 void assert(bool expression, char * msg);
 void removeLastLine();
 
@@ -41,7 +48,7 @@ int main() {
     fflush(stdout);
     system("clear");
 
-    printf("\n--------- Iniciando testes ---------\n");
+    printf(COR"\n--------- Iniciando testes ---------\n"FIM_COR);
 
     assert(usuarioNaBaseDeDadosAposCadastro, "Função procurar usuário encontrou credenciais de teste");
     assert(primeiroCadastroSucedido, "Cadastro retornou true para tentativa válida de cadastro");
@@ -59,13 +66,13 @@ int main() {
     assert(duracaoSessaoInvalidaNegativa, "SetDuracao impede alteracao para duração de sessao negativa");
     assert(duracaoSessaoValidaPositiva, "SetDuracao altera corretamente a duração de sessão");
 
-    printf("\n\n--------- Testes finalizados ---------\n\n");
+    printf(COR"\n\n--------- Testes finalizados ---------\n\n"FIM_COR);
 }
 
 void removeLastLine() {
     FILE * file = fopen(DATABASE_TEST_PATH, "rb+");
     if (file == NULL) {
-        printf("Erro ao ler o arquivo (removeLastLine)\n");
+        printf(FAILURE"Erro ao ler o arquivo (removeLastLine)\n"FIM_COR);
         exit(EXIT_FAILURE);
     }
 
@@ -89,8 +96,8 @@ void removeLastLine() {
 
 void assert(bool expression, char * msg) {
     if (expression) {
-        printf("\n\033[1;32mSucesso - %s\033[0m", msg);
+        printf(SUCCESS"\nSucesso -\033[0m %s"FIM_COR, msg);
         return;
     }
-    printf("\n\033[1;31mFalha - %s\033[0m", msg);
+    printf(FAILURE"\nFalha -\033[0m%s", msg);
 }

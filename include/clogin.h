@@ -14,6 +14,13 @@
 #define FILE_SEP ','
 #define CAPTCHA_LENGTH 5
 
+#define COR "\e[0;35m"
+#define FIM_COR "\e[0m"
+#define FAILURE "\e[1;91m"
+#define SUCCESS "\e[1;92m"
+#define WARNING "\e[4;33m"	
+#define BLUE "\e[0;34"
+
 int DURACAO_SESSAO = 60 * 60 * 24 * 7;
 char databasePath[MAX_FIELD];
 bool databasePathSet = false;
@@ -46,7 +53,7 @@ void SetDatabasePath(char * path) {
 
 	FILE * file = fopen(databasePath, "rb");
 	if (file == NULL) {
-		printf("SetDatabasePath falhou, caminho do arquivo não foi encontrado!\n");
+		printf(FAILURE"SetDatabasePath falhou, caminho do arquivo não foi encontrado!\n"FIM_COR);
 		exit(EXIT_FAILURE);
 	}
 
@@ -56,7 +63,7 @@ void SetDatabasePath(char * path) {
 
 void SetDuracaoSessao(int novaDuracao) {
     if (novaDuracao < 0) {
-        printf("Duração de sessão inválida: %d\n", novaDuracao);
+        printf(FAILURE"Duração de sessão inválida: %d\n"FIM_COR, novaDuracao);
         return;
     }
     DURACAO_SESSAO = novaDuracao;
@@ -66,7 +73,7 @@ User * _ProcurarUsuario(char * username, char * password, bool verificarSenha) {
 
     FILE * file = fopen(databasePath, "rb");
 	if(file == NULL) {
-        printf("Memory allocation error");
+        printf(FAILURE"Memory allocation error"FIM_COR);
         return NULL;
     }
 
@@ -78,7 +85,7 @@ User * _ProcurarUsuario(char * username, char * password, bool verificarSenha) {
 
             User *user = (User*) malloc(sizeof(User));
             if (user == NULL) {
-                printf("Memory alloc error (_ProcurarUsuario)\n");
+                printf(FAILURE"Memory alloc error (_ProcurarUsuario)\n"FIM_COR);
                 return NULL;
             }
 
@@ -101,13 +108,13 @@ User * _ProcurarUsuario(char * username, char * password, bool verificarSenha) {
 bool cadastro() {
 
 	if (!databasePathSet) {
-		printf("Database path not defined! Use 'SetDatabasePath' to set the path to your database\n");
+		printf(WARNING"Database path not defined! Use 'SetDatabasePath' to set the path to your database\n"FIM_COR);
 		exit(EXIT_FAILURE);
 	}
 
 	FILE *file = fopen(databasePath, "ab");
 	if(!file) {
-        printf("Memory allocation error or file not exits");
+        printf(FAILURE"Memory allocation error or file not exits"FIM_COR);
         exit(EXIT_FAILURE);
     }
 
@@ -118,15 +125,15 @@ bool cadastro() {
     FileCharAlloc(&cadastrando.password, &cleaner, file);
     FileCharAlloc(&cadastrando.email, &cleaner, file);
 
-	printf("\nREALIZAÇÃO DO CADASTRO\n");
+	printf(COR"\nREALIZAÇÃO DO CADASTRO\n");
 
-	printf("DIGITE SEU USUARIO\n");
+	printf("DIGITE SEU USUARIO\n"FIM_COR);
 	scanf("%s%*c", cadastrando.username);
 
-	printf("DIGITE SUA SENHA\n");
+	printf(COR"DIGITE SUA SENHA\n"FIM_COR);
 	scanf("%s%*c", cadastrando.password);
 
-	printf("DIGITE SEU EMAIL\n");
+	printf(COR"DIGITE SEU EMAIL\n"FIM_COR);
 	scanf("%s%*c", cadastrando.email);
 
 	if (
@@ -134,14 +141,14 @@ bool cadastro() {
 		|| CheckCharacter(cadastrando.password, FILE_SEP)
 		|| CheckCharacter(cadastrando.email, FILE_SEP)
 	) {
-		printf("CARACTER INVÁLIDO INSERIDO '%c'!\n", FILE_SEP);
+		printf(WARNING"CARACTER INVÁLIDO INSERIDO '%c'!\n"FIM_COR, FILE_SEP);
         FileClean(&cleaner, file);
 		return false;
 	}
 
     User * searchDuplicate = _ProcurarUsuario(cadastrando.username, cadastrando.password, false);
     if (searchDuplicate != NULL) {
-        printf("USUÁRIO JÁ CADASTRADO!\n");
+        printf(FAILURE"USUÁRIO JÁ CADASTRADO!\n"FIM_COR);
         return false;
     }
 	
@@ -155,7 +162,7 @@ bool cadastro() {
 	);
 
     fwrite(mensagem, strlen(mensagem), 1, file);
-	printf("CADASTRO REALIZADO COM SUCESSO: %s \n", cadastrando.username);
+	printf(SUCCESS"CADASTRO REALIZADO COM SUCESSO: \033[0m%s \n"FIM_COR, cadastrando.username);
 
     FileClean(&cleaner, file);
     return true;
@@ -164,12 +171,12 @@ bool cadastro() {
 Sessao login(int maxTries) {
 
 	if (maxTries == 0) {
-		printf("Número máximo de tentativas atingidas, por favor, tente novamente mais tarde\n");
+		printf(FAILURE"Número máximo de tentativas atingidas, por favor, tente novamente mais tarde\n"FIM_COR);
 		exit(EXIT_FAILURE);
 	}
 
 	if (!databasePathSet) {
-		printf("Database path not defined! Use 'SetDatabasePath' to set the path to your database\n");
+		printf(WARNING"Database path not defined! Use 'SetDatabasePath' to set the path to your database\n"FIM_COR);
 		exit(EXIT_FAILURE);
 	}
 
@@ -179,16 +186,16 @@ Sessao login(int maxTries) {
     CharAlloc(&visitante.username, &visitanteCleaner);
     CharAlloc(&visitante.password, &visitanteCleaner);
 
-	printf("Insira seu username: ");
+	printf(COR"Insira seu username: "FIM_COR);
 	scanf("%s%*c", visitante.username);
 
-	printf("Insira sua senha: ");
+	printf(COR"Insira sua senha: "FIM_COR);
 	scanf("%s%*c", visitante.password);
 
     User * databaseUser = _ProcurarUsuario(visitante.username, visitante.password, true);
     if (databaseUser == NULL) {
         Clean(&visitanteCleaner);
-        printf("\033[1;31mCredenciais inválidas.\033[0m\n\n");
+        printf(FAILURE"Credenciais inválidas.\n\n"FIM_COR);
         return login(maxTries - 1);
     }
 
@@ -219,7 +226,7 @@ char *generate_captcha() {
 
     char* captcha = (char*)malloc((CAPTCHA_LENGTH + 1) * sizeof(char));
     if (!captcha) {
-        printf("Memory allocation error");
+        printf(FAILURE"Memory allocation error"FIM_COR);
         exit(EXIT_FAILURE);
     }
 
@@ -239,7 +246,7 @@ bool captcha() {
 
     for (i = 0; i < n; i++) {
         char* generated_captcha = generate_captcha();
-        printf("DIGITE OS CARACTERES APRESENTADOS: \033[1;35m%s\033[0m\n", generated_captcha);
+        printf(COR"DIGITE OS CARACTERES APRESENTADOS: \033[0;34m%s\n"FIM_COR, generated_captcha);
 
         char user_input[CAPTCHA_LENGTH + 1];
         scanf("%5s", user_input);
@@ -248,7 +255,7 @@ bool captcha() {
         if (strcmp(user_input, generated_captcha) == 0) {
             return true;
         } else {
-            printf("CAPTCHA INCORRETO, TENTE NOVAMENTE!\n");
+            printf(FAILURE"CAPTCHA INCORRETO, TENTE NOVAMENTE!\n"FIM_COR);
             i--;
         }
         free(generated_captcha);
@@ -265,7 +272,7 @@ bool sessaoExpirou(Sessao sessao) {
 Sessao validarSessao(Sessao sessao, int maxTries) {
 
     if (!sessao._has || sessaoExpirou(sessao)) {
-        printf("Sua sessão é inválida ou foi expirada, por favor faça login novamente!\n\n");
+        printf(FAILURE"Sua sessão é inválida ou foi expirada, por favor faça login novamente!\n\n"FIM_COR);
         Sessao novaSessao = login(maxTries);
         return novaSessao;
     };
@@ -275,11 +282,11 @@ Sessao validarSessao(Sessao sessao, int maxTries) {
 
 int verificarDuracaoSessao(Sessao sessao) {
     if (!sessao._has) {
-        printf("Verificação de duração de sessão falhou!\n");
+        printf(FAILURE"Verificação de duração de sessão falhou!\n"FIM_COR);
         return 0;
     }
     else if (sessaoExpirou(sessao)) {
-        printf("Sessão expirada!\n");
+        printf(FAILURE"Sessão expirada!\n"FIM_COR);
         return 0;
     }
     

@@ -6,8 +6,15 @@
 #define MAX_LOGIN_TRIES 3
 #define DATABASE_PATH "./usuarios.dat"
 
+#define COR "\e[0;35m"
+#define FIM_COR "\e[0m"
+#define FAILURE "\e[1;91m"
+#define SUCCESS "\e[1;92m"
+#define WARNING "\e[4;33m"	
+#define BLUE "\e[0;34"
+
 void PressioneVoltar() {
-	printf("\nPressione enter para voltar\n");
+	printf(COR"\nPressione enter para voltar\n"FIM_COR);
 	scanf("%*c");
 }
 
@@ -23,10 +30,10 @@ int main() {
 			sessao = validarSessao(sessao, 3);
 			system("clear");
 			
-			printf("\nBem vindo, %s!\n\n", sessao.username);
+			printf(COR"\nBem vindo, \033[0m%s\033[0;35m!\n\n"FIM_COR, sessao.username);
 		}
 
-		printf("CORRUPT BANK\n");
+		printf(COR"CORRUPT BANK\n"FIM_COR);
 
 		printf("0 - Sair\n");
 		printf("1 - Login\n");
@@ -47,26 +54,26 @@ int main() {
 
 		else if(option == 2) {
 			if (cadastro()) {
-				printf("CADASTRO FEITO COM SUCESSO!\n");
+				printf(SUCCESS"CADASTRO FEITO COM SUCESSO!\n"FIM_COR);
 			}
 			else {
-				printf("CADASTRO FALHOU\n");
+				printf(FAILURE"CADASTRO FALHOU\n"FIM_COR);
 			}
 		}
 
 		else if (option == 3) {
 			if(captcha()) {
-				printf("CAPTCHA FEITO COM SUCESSO\n");
+				printf(SUCCESS"CAPTCHA FEITO COM SUCESSO\n"FIM_COR);
 			}
 		}
 
 		else if (option == 4) {
 			sessao = validarSessao(sessao, MAX_LOGIN_TRIES);
-			printf("Você possui \033[1;32m%d\033[0m segundos de sessão!\n", verificarDuracaoSessao(sessao));
+			printf(WARNING"Você possui %d segundos de sessão!\n"FIM_COR, verificarDuracaoSessao(sessao));
 		}
 
 		else {
-			printf("Opção inválida!\n");
+			printf(FAILURE"Opção inválida!\n"FIM_COR);
 		}
 		
 		PressioneVoltar();
